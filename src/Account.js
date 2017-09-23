@@ -5,39 +5,75 @@ export default class Account extends Component {
     super(props);
 
     this.state = {
-      balance: 0
+      message: null
     }
 
     this.handleDepositClick = this.handleDepositClick.bind(this)
+    this.handleWithdrawClick = this.handleWithdrawClick.bind(this)
   }
 
   handleDepositClick(e) {
     e.preventDefault();
-    if (isNaN(this.refs.amount.value)) {
-      console.log("Not a number");
-    }
-    else {
-      let amount = +this.refs.amount.value;
-      let newBalance = this.state.balance + amount;
+    // gets the value of the amount
+    // has the + sign so it converts this.refs.amount.value into a number
+    // this.refs.amount.value is string when we refer it
+    let amount = +this.refs.amount.value;
+
+    if (amount > 0) {
+      // calculates the new balance
+      let newBalance = this.props.balance + amount;
+      // sets the state.balance to be the new balance
+      this.props.onAmountChange({ balance: newBalance, type: this.props.name})
       this.setState({
-        balance: newBalance
+        message: 'Deposit is successful.'
       })
+      // resets the form to be empty after submit
       this.refs.amount.value = '';
+    } else {
+      this.setState({
+        message: 'Cannot deposit negative amount'
+      })
     }
   }
 
+  handleWithdrawClick(e) {
+    e.preventDefault()
+    let amount = +this.refs.amount.value
+    if (amount > 0) {
+      if (amount <= this.props.balance) {
+        let newBalance = this.props.balance - amount
+        this.props.onAmountChange({ balance: newBalance, type: this.props.name})
+        this.setState({
+          message: 'Withdraw is successful'
+        })
+      } else {
+        this.setState({
+          message: 'You have insufficient funds.'
+        })
+      }
+    } else {
+      this.setState({
+        message: 'You cannot withdraw negative amount.'
+      })
+    }
+    this.refs.amount.value = '';
+  }
   render() {
     let balanceClass = 'balance';
-    if (this.state.balance === 0) {
+    if (this.props.balance === 0) {
       balanceClass += ' zero';
     }
 
     return (
       <div className="account">
         <h2>{this.props.name}</h2>
-        <div className={balanceClass}>${this.state.balance}</div>
-        <input type="text" placeholder="enter an amount" ref="amount" />
+        <div className={balanceClass}>${this.props.balance}</div>
+        <input type="number" placeholder="enter an amount" ref="amount" />
         <input type="button" value="Deposit" onClick={this.handleDepositClick} />
+        <input type="button" value="Withdraw" onClick={this.handleWithdrawClick} />
+        <input type="number" placeholder="enter an amount" ref="transferAmount" />
+        <input type="button" value="Transfer" onClick={this.handleTransferClick} />
+        <p>{this.state.message}</p>
       </div>
     )
   }
