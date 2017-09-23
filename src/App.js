@@ -11,11 +11,13 @@ class App extends Component {
       savingsBalance: 100
     }
     this.handleBalanceChange = this.handleBalanceChange.bind(this)
+    this.handleTransferChange = this.handleTransferChange.bind(this)
     // this.handleCheckingsChange = this.handleCheckingsChange.bind(this)
   }
 
   // just updates the checkings balance
   handleBalanceChange(accountInfo) {
+    // updates the correct account
     if (accountInfo.type === 'Checking') {
       this.setState({
         checkingsBalance: accountInfo.balance
@@ -27,12 +29,14 @@ class App extends Component {
     }
   }
 
-  // just updates the savings balance
-  // handleSavingsChange(newBalance) {
-  //   this.setState({
-  //     savingsBalance: newBalance
-  //   })
-  // }
+  handleTransferChange(transferInfo) {
+    if (transferInfo.curAccount === 'Checking') {
+      this.setState({
+        checkingsBalance: transferInfo.curBalance,
+        savingsBalance: this.state.savingsBalance + transferInfo.change
+      })
+    }
+  }
 
   render() {
     return (
@@ -44,11 +48,13 @@ class App extends Component {
         <Account
           name="Checking"
           balance={this.state.checkingsBalance}
-          onAmountChange={this.handleBalanceChange} />
+          onAmountChange={this.handleBalanceChange}
+          onTransferChange={this.handleTransferChange} />
         <Account
           name="Savings"
           balance={this.state.savingsBalance}
-          onAmountChange={this.handleBalanceChange}/>
+          onAmountChange={this.handleBalanceChange}
+          onTransferChange={this.handleTransferChange}/>
         <div className="clear"></div>
       </div>
     );

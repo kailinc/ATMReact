@@ -10,6 +10,7 @@ export default class Account extends Component {
 
     this.handleDepositClick = this.handleDepositClick.bind(this)
     this.handleWithdrawClick = this.handleWithdrawClick.bind(this)
+    this.handleTransferClick = this.handleTransferClick.bind(this)
   }
 
   handleDepositClick(e) {
@@ -58,12 +59,29 @@ export default class Account extends Component {
     }
     this.refs.amount.value = '';
   }
+
+  handleTransferClick (e) {
+    e.preventDefault()
+    let amount = +this.refs.transferAmount.value
+    if (amount <= this.props.balance) {
+      let transferInfo = {
+        curAccount: this.props.name,
+        curBalance: this.props.balance - amount,
+        change: amount
+      }
+      this.props.onTransferChange(transferInfo)
+    } else {
+      this.setState({
+        message: 'You have insufficient funds'
+      })
+    }
+  }
+
   render() {
     let balanceClass = 'balance';
     if (this.props.balance === 0) {
       balanceClass += ' zero';
     }
-
     return (
       <div className="account">
         <h2>{this.props.name}</h2>
