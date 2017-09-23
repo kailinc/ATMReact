@@ -35,6 +35,11 @@ class App extends Component {
         checkingsBalance: transferInfo.curBalance,
         savingsBalance: this.state.savingsBalance + transferInfo.change
       })
+    } else {
+      this.setState({
+        savingsBalance: transferInfo.curBalance,
+        checkingsBalance: this.state.savingsBalance + transferInfo.change
+      })
     }
   }
 

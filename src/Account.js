@@ -63,7 +63,7 @@ export default class Account extends Component {
   handleTransferClick (e) {
     e.preventDefault()
     let amount = +this.refs.transferAmount.value
-    if (amount <= this.props.balance) {
+    if (amount <= this.props.balance && amount > 0) {
       let transferInfo = {
         curAccount: this.props.name,
         curBalance: this.props.balance - amount,
@@ -75,6 +75,7 @@ export default class Account extends Component {
         message: 'You have insufficient funds'
       })
     }
+    this.refs.transferAmount.value = ''
   }
 
   render() {
